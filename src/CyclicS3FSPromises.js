@@ -32,7 +32,10 @@ class CyclicS3FSPromises extends Function{
     if(bucket){
       this._bound.bucket = bucket
     }
-    this._bound.s3 = new S3Client({...config});
+    this._bound.s3 = new S3Client({...config,
+                                   [process.env.AWS_S3_ENDPOINT && "endpoint"]: process.env.AWS_S3_ENDPOINT,
+                                   [process.env.AWS_S3_ENDPOINT && "endpointProvider"]: () => ({url: new URL(process.env.AWS_S3_ENDPOINT)})
+                                  });
 
     return this._bound
   }
