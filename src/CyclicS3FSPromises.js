@@ -45,6 +45,21 @@ class CyclicS3FSPromises extends Function{
     return client
   }
 
+  async downloadFile(fileName, dest, options){
+    const cmd = new GetObjectCommand({
+      Bucket: this.bucket,
+      Key: util.normalize_path(fileName),
+      })
+
+    let obj = await this.s3.send(cmd)
+    const writeStream = createWriteStream(dest)
+    obj.Body.pipe(writeStream)
+    await new Promise((resolve, reject) => {
+      stream.on("error", reject);
+      stream.on("end", () => resolve());
+    });
+  }
+
   async readFile(fileName ,options){
     const cmd = new GetObjectCommand({
       Bucket: this.bucket,
