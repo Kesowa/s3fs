@@ -8,6 +8,7 @@ const {
   ListObjectVersionsCommand,
   DeleteObjectCommand,
   DeleteObjectsCommand,
+  CopyObjectCommand,
 } = require("@aws-sdk/client-s3");
 const _path = require('path')
 const {Stats} = require('fs')
@@ -44,6 +45,20 @@ class CyclicS3FSPromises extends Function{
     let client = new CyclicS3FSPromises(bucketName, config)
     return client
   }
+
+  async rename(src, dest) {
+    await copyFile(src, dest);
+    await rm(src);
+  };
+
+  async copyFile(src, dest) {
+    const cmd = new CopyObjectCommand({
+      Bucket,
+      CopySource: this.bucket + "/" + util.normalize_path(src),
+      Key: util.normalize_path(dest),
+    });
+    await this.s3.send(cmd);
+  };
 
   async uploadFile(fileName, dest, options){
     const readStream = createReadStream(fileName)
