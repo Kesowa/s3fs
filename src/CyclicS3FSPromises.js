@@ -45,6 +45,16 @@ class CyclicS3FSPromises extends Function{
     return client
   }
 
+  async uploadFile(fileName, dest, options){
+    const readStream = createReadStream(fileName)
+    const cmd = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: util.normalize_path(dest), 
+      Body: readStream
+    })
+    await this.s3.send(cmd)
+  }
+
   async downloadFile(fileName, dest, options){
     const cmd = new GetObjectCommand({
       Bucket: this.bucket,
