@@ -81,7 +81,7 @@ class CyclicS3FSPromises extends Function{
     obj.Body.pipe(writeStream)
     await new Promise((resolve, reject) => {
       obj.Body.on("error", reject);
-      obj.Body.on("close", resolve);
+      obj.Body.on("end", resolve);
     });
   }
 
