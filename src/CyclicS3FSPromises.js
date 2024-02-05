@@ -11,7 +11,7 @@ const {
   CopyObjectCommand,
 } = require("@aws-sdk/client-s3");
 const _path = require('path')
-const {Stats} = require('fs')
+const {Stats, createReadStream, createWriteStream} = require('fs')
 const util = require('./util')
 const sync_interface = require('./sync_interface');
 function streamToBuffer(stream) {
