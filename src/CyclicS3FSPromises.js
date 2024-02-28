@@ -90,7 +90,11 @@ class CyclicS3FSPromises extends Function {
       Key: util.normalize_path(dest),
       Body: readStream
     })
-    await Promise.allSettled([this.s3.send(cmd), this.invalidateCache(cmd.input.Key)])
+    if (options.nukeCache) {
+      await Promise.allSettled([this.s3.send(cmd), this.invalidateCache(cmd.input.Key)])
+    } else {
+      await this.s3.send(cmd)
+    }
   }
 
   async downloadFile(fileName, dest, options) {
@@ -125,7 +129,11 @@ class CyclicS3FSPromises extends Function {
       Key: util.normalize_path(fileName),
       Body: data
     })
-    await Promise.allSettled([this.s3.send(cmd), this.invalidateCache(cmd.input.Key)])
+    if (options.nukeCache) {
+      await Promise.allSettled([this.s3.send(cmd), this.invalidateCache(cmd.input.Key)])
+    } else {
+      await this.s3.send(cmd)
+    }
   }
 
   async exists(fileName, data, options = {}) {
