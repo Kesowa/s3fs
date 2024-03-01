@@ -127,7 +127,8 @@ class CyclicS3FSPromises extends Function {
     const cmd = new PutObjectCommand({
       Bucket: this.bucket,
       Key: util.normalize_path(fileName),
-      Body: data
+      Body: data,
+      ContentEncoding: options.encoding
     })
     if (options.nukeCache) {
       await Promise.allSettled([this.s3.send(cmd), this.invalidateCache(cmd.input.Key)])
