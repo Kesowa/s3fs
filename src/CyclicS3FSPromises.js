@@ -120,6 +120,8 @@ class CyclicS3FSPromises extends Function {
 
     let obj = await this.s3.send(cmd)
     obj = await streamToBuffer(obj.Body)
+    if (options.encoding == "utf8")
+      return obj.toString()
     return obj
   }
 
